@@ -58,14 +58,34 @@ function Tweet({
 }
 
 export function Timeline() {
-  const { data } = api.tweet.timeline.useQuery({});
+  const { data, hasNextPage, fetchNextPage, isFetching } =
+    api.tweet.timeline.useInfiniteQuery(
+      {
+        limit: 50,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }
+    );
+
+  console.log(data);
+
+  const tweets = data?.pages.flatMap((page) => page.tweets) ?? [];
 
   return (
     <div>
       <CreateTweet />
-      {data?.tweets.map((tweet) => {
+      {tweets.map((tweet) => {
         return <Tweet key={tweet.id} tweet={tweet} />;
       })}
+      <button
+        onClick={() => {
+          fetchNextPage();
+        }}
+        disabled={!hasNextPage || isFetching}
+      >
+        Next Page
+      </button>
     </div>
   );
 }

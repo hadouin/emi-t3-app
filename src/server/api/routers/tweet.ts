@@ -34,6 +34,7 @@ export const tweetRouter = createTRPCRouter({
 
       const tweets = await prisma.tweet.findMany({
         take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
         orderBy: [
           {
             createdAt: "desc",
@@ -50,8 +51,16 @@ export const tweetRouter = createTRPCRouter({
         },
       });
 
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (tweets.length > limit) {
+        const nextItem = tweets.pop() as (typeof tweets)[number];
+        nextCursor = nextItem.id;
+      }
+
       return {
         tweets,
+        nextCursor,
       };
     }),
 });
