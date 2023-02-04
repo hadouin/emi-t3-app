@@ -8,6 +8,8 @@ import "../styles/globals.css";
 import { Container } from "../components/Container";
 import { LoggedOutBanner } from "../components/LoggedOutBanner";
 
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
@@ -20,6 +22,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         </main>
       </Container>
       <LoggedOutBanner />
+      <ReactQueryDevtools initialIsOpen={false} />
     </SessionProvider>
   );
 };

@@ -49,7 +49,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    Tweets        Tweet[]
+    tweets        Tweet[]
+    likes         Like[]
 }
 
 model VerificationToken {
@@ -61,13 +62,30 @@ model VerificationToken {
 }
 
 model Tweet {
-    id            String    @id @default(cuid())
+    id          String      @id @default(cuid())
     
-    text          String
+    text        String
     
-    author User @relation(fields: [authorId], references: [id])
-    authorId      String
+    author      User        @relation(fields: [authorId], references: [id])
+    authorId    String
 
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+
+    likes        Like[]
+}
+
+model Like {
+    id          String      @id @default(cuid())
+
+    tweet       Tweet       @relation(fields: [tweetId], references: [id])
+    tweetId     String
+
+    user        User        @relation(fields: [userId], references: [id])
+    userId      String
+
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+
+    @@unique([tweetId, userId])
 }
